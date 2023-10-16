@@ -1,11 +1,13 @@
 // Globals
 const todoList = document.getElementById("todo-list");
 const userSelect = document.getElementById("user-todo");
+const form = document.querySelector("form");
 let todos = [];
 let users = [];
 
 // Atach events
 document.addEventListener("DOMContentLoaded", initApp);
+form.addEventListener("submit", handleSubmit);
 
 // Basic logic
 function getUserName(userId) {
@@ -39,8 +41,8 @@ function createUserOption(user) {
   const option = document.createElement("option");
   option.value = user.id;
   option.innerText = user.name;
-  
-  userSelect.append(option)
+
+  userSelect.append(option);
 }
 
 // Event logic
@@ -51,7 +53,20 @@ function initApp() {
     todos.forEach((todo) => {
       printTodo(todo);
     });
-    users.forEach((user) => createUserOption(user));
+
+    users.forEach((user) => {
+      createUserOption(user);
+    });
+  });
+}
+
+function handleSubmit(event) {
+  event.preventDefault();
+
+  createTodo({
+    userId: Number(form.user.value),
+    title: form.todo.value,
+    completed: false,
   });
 }
 
@@ -66,4 +81,17 @@ async function getAllTodos() {
   const responce = await fetch("https://jsonplaceholder.typicode.com/todos");
   const data = await responce.json();
   return data;
+}
+
+async function createTodo(todo) {
+  const responce = await fetch("https://jsonplaceholder.typicode.com/todos", {
+    method: "POST",
+    body: JSON.stringify(todo),
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+  const newTodo = await responce.json();
+
+  printTodo(newTodo);
 }
