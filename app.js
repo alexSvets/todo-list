@@ -1,5 +1,6 @@
 // Globals
 const todoList = document.getElementById("todo-list");
+const userSelect = document.getElementById("user-todo");
 let todos = [];
 let users = [];
 
@@ -34,13 +35,23 @@ function printTodo({ userId, id, title, completed }) {
   todoList.prepend(li);
 }
 
+function createUserOption(user) {
+  const option = document.createElement("option");
+  option.value = user.id;
+  option.innerText = user.name;
+  
+  userSelect.append(option)
+}
+
 // Event logic
 function initApp() {
   Promise.all([getAllTodos(), getAllUsers()]).then((values) => {
     [todos, users] = values;
+
     todos.forEach((todo) => {
       printTodo(todo);
     });
+    users.forEach((user) => createUserOption(user));
   });
 }
 
