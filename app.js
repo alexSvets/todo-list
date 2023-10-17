@@ -26,6 +26,7 @@ function printTodo({ userId, id, title, completed }) {
   const status = document.createElement("input");
   status.type = "checkbox";
   status.checked = completed;
+  status.addEventListener("change", handleTodoChange);
 
   const close = document.createElement("span");
   close.innerHTML = "&times";
@@ -70,28 +71,49 @@ function handleSubmit(event) {
   });
 }
 
+function handleTodoChange() {
+  const todoId = this.parentElement.dataset.id;
+  const completed = this.checked;
+  toggleTodoComplete(todoId, completed);
+}
+
 // Async logic
 async function getAllUsers() {
-  const responce = await fetch("https://jsonplaceholder.typicode.com/users");
-  const data = await responce.json();
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const data = await response.json();
   return data;
 }
 
 async function getAllTodos() {
-  const responce = await fetch("https://jsonplaceholder.typicode.com/todos");
-  const data = await responce.json();
+  const response = await fetch("https://jsonplaceholder.typicode.com/todos");
+  const data = await response.json();
   return data;
 }
 
 async function createTodo(todo) {
-  const responce = await fetch("https://jsonplaceholder.typicode.com/todos", {
+  const response = await fetch("https://jsonplaceholder.typicode.com/todos", {
     method: "POST",
     body: JSON.stringify(todo),
     headers: {
       "Content-type": "application/json",
     },
   });
-  const newTodo = await responce.json();
+  const newTodo = await response.json();
 
   printTodo(newTodo);
+}
+
+async function toggleTodoComplete(todoId, completed) {
+  const response = await fetch(
+    `https://jsonplaceholder.typicode.com/todos/${todoId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ completed }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    }
+  );
+  const data = await response.json();
+  console.log(data);
 }
