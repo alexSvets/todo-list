@@ -86,6 +86,7 @@ function handleSubmit(event) {
 function handleTodoChange() {
   const todoId = this.parentElement.dataset.id;
   const completed = this.checked;
+
   toggleTodoComplete(todoId, completed);
 }
 
